@@ -1,19 +1,18 @@
-import { fileURLToPath } from "url"
-import { dirname } from "path"
+import { dirname, join } from "node:path"
+import { fileURLToPath } from "node:url"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-import createError from "http-errors"
-import express, { json, urlencoded, static as static_ } from "express"
-import { join } from "path"
 import cookieParser from "cookie-parser"
+import express, { json, static as static_, urlencoded } from "express"
+import createError from "http-errors"
 import logger from "morgan"
 
 import indexRouter from "./routes/index.js"
 import usersRouter from "./routes/users.js"
 
-var app = express()
+const app = express()
 
 // view engine setup
 app.set("views", join(__dirname, "views"))
@@ -29,19 +28,19 @@ app.use("/", indexRouter)
 app.use("/users", usersRouter)
 
 // catch 404 and forward to error handler
-app.use(function (_req, _res, next) {
-  next(createError(404))
+app.use((_req, _res, next) => {
+	next(createError(404))
 })
 
 // error handler
-app.use(function (err, req, res, _next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message
-  res.locals.error = req.app.get("env") === "development" ? err : {}
+app.use((err, req, res, _next) => {
+	// set locals, only providing error in development
+	res.locals.message = err.message
+	res.locals.error = req.app.get("env") === "development" ? err : {}
 
-  // render the error page
-  res.status(err.status || 500)
-  res.render("error")
+	// render the error page
+	res.status(err.status || 500)
+	res.render("error")
 })
 
 export default app
